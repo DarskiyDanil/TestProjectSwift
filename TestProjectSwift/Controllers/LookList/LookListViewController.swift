@@ -12,7 +12,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     
     static let shared = LookListViewController()
     
-    let editListViewController = EditListViewController()
+//    let editListViewController = EditListViewController()
     let datasource = LookListDataSource()
     let tableView: UITableView = {
         var tableView = UITableView()
@@ -132,9 +132,19 @@ extension LookListViewController {
     
 //    застрял здесь
     @objc func tapButtonCorrect() {
-//        navigationController?.pushViewController(self.editListViewController, animated: false)
-        navigationController?.present(self.editListViewController, animated: true, completion: nil)
+        let editListViewController = EditListViewController()
+        
+//        navigationController?.pushViewController(editListViewController, animated: false)
+//        navigationController?.present(self.editListViewController, animated: true, completion: nil)
+//        navigationController?.popToViewController(editListViewController, animated: true)
+        editListViewController.modalPresentationStyle = .popover
+        
+        editListViewController.modalTransitionStyle = .crossDissolve
+        editListViewController.isModalInPresentation = false
+        present(editListViewController, animated: true, completion: nil)
+//        self.dismiss(animated: true, completion: nil)
         print("tapButtonCorrect")
+        
     }
     
 }

@@ -21,6 +21,10 @@ class PresentViewController: UIViewController, UIToolbarDelegate {
         }
     }
     
+//    deinit {
+//        PresentViewController()
+//    }
+    
 }
 
 
