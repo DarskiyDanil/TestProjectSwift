@@ -11,7 +11,7 @@ import UIKit
 class EditVCDataSource: UITableView, UITableViewDataSource, UITableViewDelegate {
     
     var onePerson: [SectionPerson] = [SectionPerson(namePerson: "Николай", lastnamePerson: "Николаевич", attributePerson: [
-        "редактируемая информация", " в процессе разработки", "почти у цели"
+        "редактируемая информация", "в процессе разработки", "почти у цели"
     ], toggleExpanded: false)]
     
     //    количество секций

@@ -10,6 +10,9 @@ import UIKit
 
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
+    static let shared = LookListViewController()
+    
+    let editListViewController = EditListViewController()
     let datasource = LookListDataSource()
     let tableView: UITableView = {
         var tableView = UITableView()
@@ -85,6 +88,25 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
         tableView.endUpdates()
     }
     
+    
+//    //    удаление ячеек свайпом
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let deleteAction = UIContextualAction(style: .destructive, title: "") { _, _, completionHandler in
+//
+//            // 1. remove object from your array
+//            self.datasource.sectionsPerson.remove(at: indexPath.section)
+//            // 2. reload the table, otherwise you get an index out of bounds crash
+//            self.tableView.reloadData()
+//
+//            completionHandler(true)
+//        }
+//        deleteAction.backgroundColor = .systemGreen
+//        deleteAction.image = UIImage(named: "trash")
+//        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+//        configuration.performsFirstActionWithFullSwipe = true
+//        return configuration
+//    }
+    
 }
 
 
@@ -106,6 +128,13 @@ extension LookListViewController {
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+//    застрял здесь
+    @objc func tapButtonCorrect() {
+//        navigationController?.pushViewController(self.editListViewController, animated: false)
+        navigationController?.present(self.editListViewController, animated: true, completion: nil)
+        print("tapButtonCorrect")
     }
     
 }

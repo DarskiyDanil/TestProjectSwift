@@ -23,7 +23,8 @@ class EditTableViewCell: UITableViewCell {
         text.autocorrectionType = .yes
         text.spellCheckingType = .yes
         text.layer.cornerRadius = 4
-        text.backgroundColor = #colorLiteral(red: 0.9452813268, green: 0.9319322705, blue: 1, alpha: 1)
+        text.backgroundColor = #colorLiteral(red: 0.9516987205, green: 0.9630662799, blue: 1, alpha: 1)
+        text.textAlignment = .natural
         return text
     }()
     

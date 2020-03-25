@@ -15,26 +15,30 @@ protocol ExpandebleEditListHeaderFooterViewDelegate {
 
 class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
     
+//    let editListViewController = EditListViewController()
+//    let ddd = EditListViewController.shared
     var delegate: ExpandebleEditListHeaderFooterViewDelegate?
     var section: Int?
     
-    //    для редактирования
-    let buttonCorrect: UIButton = {
+    //    для удаление всей секции Person
+    let dellOnePersonButton: UIButton = {
         var button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.darkGray, for: .normal)
-        button.setImage(UIImage(systemName: "checkmark.rectangle"), for: .normal)
+        button.setImage(UIImage(systemName: "person.crop.circle.badge.minus"), for: .normal)
         button.layer.cornerRadius = 15
+        button.addTarget(self, action:  #selector(EditListViewController.shared.tapDellOnePersonButton), for:.touchDown)
         return button
     }()
     
-    //    для добавления ячейки с доп атрибутом
+    //    для добавления ячейки в секцию Person
     let buttonAdd: UIButton = {
         var button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.darkGray, for: .normal)
-        button.setImage(UIImage(systemName: "plus.rectangle"), for: .normal)
+        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         button.layer.cornerRadius = 15
+        button.addTarget(self, action:  #selector(EditListViewController.shared.tapAddCellInSectionButton), for:.touchDown)
         return button
     }()
     
@@ -50,7 +54,8 @@ class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
         text.sizeToFit()
         text.clipsToBounds = true
         text.layer.cornerRadius = 4
-        text.backgroundColor = #colorLiteral(red: 0.9452813268, green: 0.9319322705, blue: 1, alpha: 1)
+        text.backgroundColor = #colorLiteral(red: 0.9304324985, green: 0.919935286, blue: 1, alpha: 1)
+        text.textAlignment = .natural
         return text
     }()
     
@@ -106,26 +111,27 @@ extension ExpandebleEditListHeaderFooterView {
         view.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: 0).isActive = true
         view.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 0).isActive = true
         
-        view.addSubview(buttonCorrect)
+        view.addSubview(dellOnePersonButton)
         view.addSubview(name)
         view.addSubview(buttonAdd)
         
         name.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         name.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        name.rightAnchor.constraint(equalTo: buttonCorrect.leftAnchor, constant: -50).isActive = true
+        name.rightAnchor.constraint(equalTo: dellOnePersonButton.leftAnchor, constant: -12).isActive = true
         name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 6).isActive = true
         name.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        buttonCorrect.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
-        buttonCorrect.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        buttonCorrect.rightAnchor.constraint(equalTo: buttonAdd.leftAnchor, constant: -4).isActive = true
-        buttonCorrect.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 110).isActive = true
-        buttonCorrect.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        dellOnePersonButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
+        dellOnePersonButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
+        dellOnePersonButton.rightAnchor.constraint(equalTo: buttonAdd.leftAnchor, constant: -4).isActive = true
+        dellOnePersonButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        dellOnePersonButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         buttonAdd.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         buttonAdd.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        buttonAdd.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
-        buttonAdd.leftAnchor.constraint(equalTo: buttonCorrect.rightAnchor, constant: 2).isActive = true
+        buttonAdd.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -12).isActive = true
+//        buttonAdd.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 120).isActive = true
+        buttonAdd.widthAnchor.constraint(equalToConstant: 40).isActive = true
         buttonAdd.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     

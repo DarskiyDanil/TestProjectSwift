@@ -23,7 +23,7 @@ class ExpandebleLookListHeaderFooterView: UITableViewHeaderFooterView {
         var button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.darkGray, for: .normal)
-        //        button.addTarget(self, action:  #selector(tapButton), for:.touchDown)
+        button.addTarget(self, action:  #selector(LookListViewController.shared.tapButtonCorrect), for:.touchDown)
         button.setImage(UIImage(systemName: "pencil.and.ellipsis.rectangle"), for: .normal)
         button.layer.cornerRadius = 15
         return button
@@ -35,7 +35,7 @@ class ExpandebleLookListHeaderFooterView: UITableViewHeaderFooterView {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
         lbl.textColor = .darkGray
-        lbl.textAlignment = .left
+        lbl.textAlignment = .natural
         return lbl
     }()
     
@@ -95,18 +95,21 @@ extension ExpandebleLookListHeaderFooterView {
         
         name.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         name.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        name.rightAnchor.constraint(equalTo: buttonCorrect.leftAnchor, constant: -20).isActive = true
+        name.rightAnchor.constraint(equalTo: buttonCorrect.leftAnchor, constant: -14).isActive = true
         name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 12).isActive = true
         name.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         buttonCorrect.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         buttonCorrect.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        buttonCorrect.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -2).isActive = true
-        buttonCorrect.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 130).isActive = true
+        buttonCorrect.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
+//        buttonCorrect.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 130).isActive = true
+        buttonCorrect.widthAnchor.constraint(equalToConstant: 40).isActive = true
         buttonCorrect.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     // MARK: Action
+    
+    
     
     @objc func selectHeaderAction(gestureRecognizer: UITapGestureRecognizer) {
         let cell = gestureRecognizer.view as! ExpandebleLookListHeaderFooterView

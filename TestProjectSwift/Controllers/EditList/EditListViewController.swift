@@ -10,17 +10,21 @@ import UIKit
 
 class EditListViewController: UIViewController, UITableViewDelegate, ExpandebleEditListHeaderFooterViewDelegate {
     
+    static let shared = EditListViewController()
     let datasource = EditVCDataSource()
-    let tableView: UITableView = {
+    
+    var tableView: UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
+let toolBar =  UIToolbar()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .blue
+//        bundle.barStyle = .default
         DispatchQueue.main.async {
             self.addTableView()
         }
@@ -41,9 +45,9 @@ class EditListViewController: UIViewController, UITableViewDelegate, ExpandebleE
     }
     //    высота ячейки в зависимости от нажатой секции
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if datasource.onePerson[indexPath.section].toggleExpanded {
-//            return 45
-//        }
+        //        if datasource.onePerson[indexPath.section].toggleExpanded {
+        //            return 45
+        //        }
         return 45
     }
     
@@ -85,7 +89,23 @@ class EditListViewController: UIViewController, UITableViewDelegate, ExpandebleE
         }
         tableView.endUpdates()
     }
-
+    
+    //    удаление ячеек свайпом
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { _, _, completionHandler in
+            //  удаление в массиве
+            self.datasource.onePerson[indexPath.section].attributePerson.remove(at: indexPath.row)
+            //  перезагрузка таблицы
+            self.tableView.reloadData()
+            completionHandler(true)
+        }
+        deleteAction.backgroundColor = .systemPink
+        deleteAction.image = UIImage(systemName: "trash")
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+    }
+    
 }
 
 
@@ -94,7 +114,13 @@ extension EditListViewController {
     // MARK: Constraint
     
     func addTableView() {
-        view.addSubview(tableView)
+        
+
+    view.addSubview(toolBar)
+    view.addSubview(tableView)
+
+
+        
         tableView.backgroundColor = .white
         tableView.register(EditTableViewCell.self, forCellReuseIdentifier: EditTableViewCell.idCell)
         tableView.dataSource = datasource
@@ -102,10 +128,65 @@ extension EditListViewController {
         tableView.indicatorStyle = .default
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: toolBar.bottomAnchor, constant: 0).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        self.toolBar.barStyle = .default
+        self.toolBar.isTranslucent = true
+        self.toolBar.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
+        self.toolBar.tintColor = .systemBlue
+        self.toolBar.sizeToFit()
+            
+        toolBar.translatesAutoresizingMaskIntoConstraints = false
+        toolBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
+        toolBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
+        toolBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
+        toolBar.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 0).isActive = true
+        toolBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
+        //        настройка кнопок
+        let savePersonImage = UIImage(systemName: "checkmark.rectangle")
+        let addOnePersonImage = UIImage(systemName: "person.crop.circle.badge.plus")
+//        let aboutProgrammImageForButton = UIImage(systemName: "checkmark.rectangle")
+        
+        let savePersonsListButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapSavePersonsListButton))
+        savePersonsListButton.image = savePersonImage
+        
+        let addOnePersonButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapAddOnePersonButton))
+        addOnePersonButton.image = addOnePersonImage
+        
+//        let aboutProgrammButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapDellOnePersonButton))
+//        aboutProgrammButton.image = aboutProgrammImageForButton
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        self.toolBar.setItems([addOnePersonButton, flexibleSpace, savePersonsListButton], animated: false)
+        self.toolBar.isUserInteractionEnabled = true
+    }
+    
+//    добавить ячейку для Person
+    @objc func tapAddCellInSectionButton () {
+    //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
+        print("tapAddCellInSectionButton")
+        }
+    
+    // сохранение изменений
+    @objc func tapSavePersonsListButton () {
+//        navigationController?.present(EditListViewController(), animated: true, completion: nil)
+        print("tapSavePersonsListButton")
+    }
+
+//    добавить секцию с Person
+    @objc func tapAddOnePersonButton () {
+        print("tapAddOnePersonButton")
+//        navigationController?.present(LookListViewController(), animated: true, completion: nil)
+    }
+
+    
+    @objc func tapDellOnePersonButton () {
+        print("tapDellOnePersonButton")
     }
     
 }
