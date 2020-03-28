@@ -12,7 +12,7 @@ import CoreData
 class EditListViewController: UITableViewController, ExpandebleEditListHeaderFooterViewDelegate {
     
     var personCoreData: [Person]?
-//    let indexPath = IndexPath()
+    //    let indexPath = IndexPath()
     
     static let shared = EditListViewController()
     
@@ -33,8 +33,8 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         //         запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
         //        сортировка
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        //        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        //        fetchRequest.sortDescriptors = [sortDescriptor]
         do {
             personCoreData = try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -74,6 +74,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         guard let name = personCoreData![section].name else {return header}
         header.setupSection(withTitle: name, section: section, delegate: self)
         header.buttonAdd.tag = section
+        header.dellOnePersonButton.tag = section
         return header
     }
     
@@ -102,7 +103,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
             
             do {
                 try context.save()
-//                tableView.deleteRows(at: [IndexPath], with: .automatic)
+                //                tableView.deleteRows(at: [IndexPath], with: .automatic)
             } catch let error as NSError {
                 print(error.localizedDescription)
             }
@@ -182,12 +183,6 @@ extension EditListViewController {
         //         добавление одного атрибута
         attributes?.add(contextObject)
         //        присваиваем Person новый Attributes
-
-//        for i in self.personCoreData! {
-//            i.attributes = attributes
-//        }
-        
-        
         self.personCoreData?[section].attributes = attributes
         
         do {
@@ -232,13 +227,8 @@ extension EditListViewController {
             return}
         // объект Person
         let personObject = Person(entity: entity, insertInto: context)
-        //            помещаем имя Person секции в объект
+        // помещаем имя Person секции в объект
         personObject.name = wiithTitleName
-        //            taskObject.lastname = lastName
-        
-        //            for attribute in attributesObject.attributes! {
-        //
-        //            }
         // сохранение
         do {
             try context.save()
@@ -254,42 +244,27 @@ extension EditListViewController {
         return appDelegate.coreDataManager.persistentContainer.viewContext
     }
     
-    @objc func tapDellOnePersonButton () {
+    // удаление в CoreData объектов
+    @objc func tapDellOnePersonButton (buttonTag: UIButton) {
+        let section = buttonTag.tag
         let context = getContext()
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
         //        получаем все Person
         if let objects = try? context.fetch(fetchRequest) {
-            for object in objects {
-                context.delete(object)
-            }
+            let object = objects[section]
+            //            for object in objects {
+            context.delete(object)
+            //            }
         }
         do {
             try context.save()
+            personCoreData?.remove(at: section)
         } catch let error as NSError {
             print(error.localizedDescription)
         }
-        print("tapDellOnePersonButton")
+        self.tableView.reloadData()
     }
     
-    // удаление в CoreData всех сохраненных объектов
-    private func deleteEntity() {
-        let context = getContext()
-        let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
-        if let objects = try? context.fetch(fetchRequest) {
-            for object in objects {
-                context.delete(object)
-                
-            }
-        }
-        do {
-            try context.save()
-            
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
-    }
-    //   ======================
     // MARK: - Constraint
     
     func navigationBarAdd() {
@@ -305,3 +280,8 @@ extension EditListViewController {
 }
 
 
+// MARK: - -----------------------------------------------------------------------------------------------
+
+// сделать сохранение в textView  или не делать
+
+// MARK: - -----------------------------------------------------------------------------------------------
