@@ -23,12 +23,12 @@
 		83907497241C0A8D0082F30F /* LookListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83907496241C0A8D0082F30F /* LookListTableViewCell.swift */; };
 		8390749A241CE7D90082F30F /* PersonModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 83907498241CE7D90082F30F /* PersonModel.xcdatamodeld */; };
 		8390749C241CF86D0082F30F /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8390749B241CF86D0082F30F /* CoreDataManager.swift */; };
-		839074A1241D0E670082F30F /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8390749D241D0E670082F30F /* Person+CoreDataClass.swift */; };
-		839074A2241D0E670082F30F /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8390749E241D0E670082F30F /* Person+CoreDataProperties.swift */; };
-		839074A3241D0E670082F30F /* Attributes+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8390749F241D0E670082F30F /* Attributes+CoreDataClass.swift */; };
-		839074A4241D0E670082F30F /* Attributes+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839074A0241D0E670082F30F /* Attributes+CoreDataProperties.swift */; };
 		839074A62424C8610082F30F /* ExpandebleLookListHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839074A52424C8610082F30F /* ExpandebleLookListHeaderFooterView.swift */; };
 		839074AA2427F6FD0082F30F /* ExpandebleEditListHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839074A92427F6FD0082F30F /* ExpandebleEditListHeaderFooterView.swift */; };
+		83C98A18242D471800703B85 /* Attributes+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C98A14242D471800703B85 /* Attributes+CoreDataClass.swift */; };
+		83C98A19242D471800703B85 /* Attributes+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C98A15242D471800703B85 /* Attributes+CoreDataProperties.swift */; };
+		83C98A1A242D471800703B85 /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C98A16242D471800703B85 /* Person+CoreDataClass.swift */; };
+		83C98A1B242D471800703B85 /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C98A17242D471800703B85 /* Person+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,12 +50,12 @@
 		83907496241C0A8D0082F30F /* LookListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookListTableViewCell.swift; sourceTree = "<group>"; };
 		83907499241CE7D90082F30F /* PersonModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PersonModel.xcdatamodel; sourceTree = "<group>"; };
 		8390749B241CF86D0082F30F /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		8390749D241D0E670082F30F /* Person+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8390749E241D0E670082F30F /* Person+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		8390749F241D0E670082F30F /* Attributes+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attributes+CoreDataClass.swift"; sourceTree = "<group>"; };
-		839074A0241D0E670082F30F /* Attributes+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attributes+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		839074A52424C8610082F30F /* ExpandebleLookListHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandebleLookListHeaderFooterView.swift; sourceTree = "<group>"; };
 		839074A92427F6FD0082F30F /* ExpandebleEditListHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandebleEditListHeaderFooterView.swift; sourceTree = "<group>"; };
+		83C98A14242D471800703B85 /* Attributes+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attributes+CoreDataClass.swift"; sourceTree = "<group>"; };
+		83C98A15242D471800703B85 /* Attributes+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attributes+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		83C98A16242D471800703B85 /* Person+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataClass.swift"; sourceTree = "<group>"; };
+		83C98A17242D471800703B85 /* Person+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,10 +123,10 @@
 		839074822417F4C50082F30F /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8390749D241D0E670082F30F /* Person+CoreDataClass.swift */,
-				8390749E241D0E670082F30F /* Person+CoreDataProperties.swift */,
-				8390749F241D0E670082F30F /* Attributes+CoreDataClass.swift */,
-				839074A0241D0E670082F30F /* Attributes+CoreDataProperties.swift */,
+				83C98A14242D471800703B85 /* Attributes+CoreDataClass.swift */,
+				83C98A15242D471800703B85 /* Attributes+CoreDataProperties.swift */,
+				83C98A16242D471800703B85 /* Person+CoreDataClass.swift */,
+				83C98A17242D471800703B85 /* Person+CoreDataProperties.swift */,
 				83907498241CE7D90082F30F /* PersonModel.xcdatamodeld */,
 				8390749B241CF86D0082F30F /* CoreDataManager.swift */,
 				839074802417F4BA0082F30F /* SectionPerson.swift */,
@@ -234,12 +234,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				83907462241024CD0082F30F /* PresentViewController.swift in Sources */,
-				839074A1241D0E670082F30F /* Person+CoreDataClass.swift in Sources */,
 				83907495241C06E90082F30F /* LookListDataSource.swift in Sources */,
 				83907491241C05010082F30F /* EditTableViewCell.swift in Sources */,
 				839074812417F4BA0082F30F /* SectionPerson.swift in Sources */,
 				839074AA2427F6FD0082F30F /* ExpandebleEditListHeaderFooterView.swift in Sources */,
-				839074A4241D0E670082F30F /* Attributes+CoreDataProperties.swift in Sources */,
+				83C98A19242D471800703B85 /* Attributes+CoreDataProperties.swift in Sources */,
 				8390749C241CF86D0082F30F /* CoreDataManager.swift in Sources */,
 				8390747724118C9E0082F30F /* GradientView.swift in Sources */,
 				8390748D241BDB930082F30F /* EditListViewController.swift in Sources */,
@@ -249,10 +248,11 @@
 				83907475241032700082F30F /* LoginViewController.swift in Sources */,
 				839074A62424C8610082F30F /* ExpandebleLookListHeaderFooterView.swift in Sources */,
 				83907460241024CD0082F30F /* SceneDelegate.swift in Sources */,
-				839074A2241D0E670082F30F /* Person+CoreDataProperties.swift in Sources */,
 				8390749A241CE7D90082F30F /* PersonModel.xcdatamodeld in Sources */,
+				83C98A1A242D471800703B85 /* Person+CoreDataClass.swift in Sources */,
+				83C98A1B242D471800703B85 /* Person+CoreDataProperties.swift in Sources */,
 				83907493241C06A80082F30F /* EditVCDataSource.swift in Sources */,
-				839074A3241D0E670082F30F /* Attributes+CoreDataClass.swift in Sources */,
+				83C98A18242D471800703B85 /* Attributes+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,7 +35,7 @@ extension PresentViewController {
     func toolBarSetip() {
         view.addSubview(toolBar)
         
-        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
+        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.8225412965, green: 0.7370750904, blue: 0.964071691, alpha: 1)
         self.navigationItem.leftItemsSupplementBackButton = true
         self.toolBar.barStyle = .default
         self.toolBar.isTranslucent = true
@@ -66,7 +66,8 @@ extension PresentViewController {
     // MARK: Action
     
     @objc func tapEditButton () {
-        navigationController?.present(EditListViewController(), animated: true, completion: nil)
+        navigationController?.pushViewController(EditListViewController(), animated: true)
+//        present(EditListViewController(), animated: true, completion: nil)
     }
     
     @objc func tapLookButton () {

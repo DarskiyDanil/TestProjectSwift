@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
     static let shared = LookListViewController()
-    
+    var context: NSManagedObjectContext!
 //    let editListViewController = EditListViewController()
     let datasource = LookListDataSource()
     let tableView: UITableView = {
@@ -88,24 +89,11 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
         tableView.endUpdates()
     }
     
-    
-//    //    удаление ячеек свайпом
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let deleteAction = UIContextualAction(style: .destructive, title: "") { _, _, completionHandler in
-//
-//            // 1. remove object from your array
-//            self.datasource.sectionsPerson.remove(at: indexPath.section)
-//            // 2. reload the table, otherwise you get an index out of bounds crash
-//            self.tableView.reloadData()
-//
-//            completionHandler(true)
-//        }
-//        deleteAction.backgroundColor = .systemGreen
-//        deleteAction.image = UIImage(named: "trash")
-//        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-//        configuration.performsFirstActionWithFullSwipe = true
-//        return configuration
-//    }
+    override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+        
+        
+    }
     
 }
 
@@ -134,15 +122,13 @@ extension LookListViewController {
     @objc func tapButtonCorrect() {
         let editListViewController = EditListViewController()
         
-//        navigationController?.pushViewController(editListViewController, animated: false)
-//        navigationController?.present(self.editListViewController, animated: true, completion: nil)
-//        navigationController?.popToViewController(editListViewController, animated: true)
         editListViewController.modalPresentationStyle = .popover
-        
         editListViewController.modalTransitionStyle = .crossDissolve
         editListViewController.isModalInPresentation = false
+        
         present(editListViewController, animated: true, completion: nil)
 //        self.dismiss(animated: true, completion: nil)
+        
         print("tapButtonCorrect")
         
     }

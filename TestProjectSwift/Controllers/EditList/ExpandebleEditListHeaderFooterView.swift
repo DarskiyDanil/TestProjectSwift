@@ -15,8 +15,9 @@ protocol ExpandebleEditListHeaderFooterViewDelegate {
 
 class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
     
-//    let editListViewController = EditListViewController()
-//    let ddd = EditListViewController.shared
+    //    let editListViewController = EditListViewController()
+    //    let ddd = EditListViewController.shared
+    //    static let shared = ExpandebleEditListHeaderFooterView()
     var delegate: ExpandebleEditListHeaderFooterViewDelegate?
     var section: Int?
     
@@ -90,7 +91,7 @@ class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
         
         guard let section = section else {return}
         delegate?.toggleSection(header: self, section: section)
-//        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectHeaderAction)))
+        //        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectHeaderAction)))
     }
     
     required init?(coder: NSCoder) {
@@ -130,17 +131,17 @@ extension ExpandebleEditListHeaderFooterView {
         buttonAdd.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         buttonAdd.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
         buttonAdd.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -12).isActive = true
-//        buttonAdd.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 120).isActive = true
+        //        buttonAdd.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 120).isActive = true
         buttonAdd.widthAnchor.constraint(equalToConstant: 40).isActive = true
         buttonAdd.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     // MARK: Action
     
-//    @objc func selectHeaderAction(gestureRecognizer: UITapGestureRecognizer) {
-//        let cell = gestureRecognizer.view as! ExpandebleEditListHeaderFooterView
-//        guard let section = cell.section else {return}
-//        delegate?.toggleSection(header: self, section: section)
-//    }
+//        @objc func selectHeaderAction(gestureRecognizer: UITapGestureRecognizer) {
+//            let cell = gestureRecognizer.view as! ExpandebleEditListHeaderFooterView
+//            guard let section = cell.section else {return}
+//            delegate?.toggleSection(header: self, section: section)
+//        }
     
 }

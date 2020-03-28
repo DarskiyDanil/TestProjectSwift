@@ -7,94 +7,107 @@
 //
 
 import UIKit
+import CoreData
 
-class EditListViewController: UIViewController, UITableViewDelegate, ExpandebleEditListHeaderFooterViewDelegate {
+class EditListViewController: UITableViewController, ExpandebleEditListHeaderFooterViewDelegate {
+    
+    var personCoreData: [Person]?
+//    let indexPath = IndexPath()
     
     static let shared = EditListViewController()
-    let datasource = EditVCDataSource()
-    
-    var tableView: UITableView = {
-        var tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-    
-let toolBar =  UIToolbar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        bundle.barStyle = .default
-        DispatchQueue.main.async {
-            self.addTableView()
-        }
+        navigationBarAdd()
+        tableView.indicatorStyle = .default
+        tableView.backgroundColor = .white
+        tableView.register(EditTableViewCell.self, forCellReuseIdentifier: EditTableViewCell.idCell)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        tableView.rowHeight = UITableView.automaticDimension
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //        получаем сохраненные сущности
+        let context = getContext()
+        //         запрос
+        let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
+        //        сортировка
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        do {
+            personCoreData = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
-    //    убрал палец с ячейки
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //    убрал палец с ячейки и снял выделение
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     //    высота секции
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 45
     }
-    //    высота ячейки в зависимости от нажатой секции
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        //        if datasource.onePerson[indexPath.section].toggleExpanded {
-        //            return 45
-        //        }
+    //    высота ячейки
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 45
     }
     
     // установка вида для нижнего колонтитула
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 4))
         footerView.backgroundColor = .white
         return footerView
     }
     
     //    толщина разделительной линии между ячейками
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 4
     }
     
     //    внешний вид секции
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = ExpandebleEditListHeaderFooterView()
-        header.setupSection(withTitle: datasource.onePerson[section].namePerson + "  " + datasource.onePerson[section].lastnamePerson, section: section, delegate: self)
+        guard let name = personCoreData![section].name else {return header}
+        header.setupSection(withTitle: name, section: section, delegate: self)
+        header.buttonAdd.tag = section
         return header
     }
     
     //    при нажатии на секцию
     func toggleSection(header: ExpandebleEditListHeaderFooterView, section: Int) {
-        //        меняем
-        datasource.onePerson[section].toggleExpanded = !datasource.onePerson[section].toggleExpanded
-        
-        //        меняем цвет секции
-        if datasource.onePerson[section].toggleExpanded == true {
-            header.view.backgroundColor = #colorLiteral(red: 0.7395023704, green: 0.8710801601, blue: 1, alpha: 1)
-        } else {
-            header.view.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
-        }
-        
         //        обновление строк относящихся к секции
         tableView.beginUpdates()
-        for row in 0..<datasource.onePerson[section].attributePerson.count {
+        guard let person = personCoreData else {return}
+        guard let attributes = person[section].attributes else {return}
+        for row in 0..<attributes.count {
             tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
         }
         tableView.endUpdates()
     }
     
     //    удаление ячеек свайпом
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { _, _, completionHandler in
             //  удаление в массиве
-            self.datasource.onePerson[indexPath.section].attributePerson.remove(at: indexPath.row)
+            //            self.onePerson[indexPath.section].attributePerson.remove(at: indexPath.row)
+            let context = self.getContext()
+            guard let person = self.personCoreData else {return}
+            guard let attributes = person[indexPath.section].attributes  else {return}
+            guard let attribut = attributes[indexPath.row] as? Attributes else {return}
+            context.delete(attribut)
+            
+            do {
+                try context.save()
+//                tableView.deleteRows(at: [IndexPath], with: .automatic)
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+            
+            
             //  перезагрузка таблицы
             self.tableView.reloadData()
             completionHandler(true)
@@ -111,84 +124,184 @@ let toolBar =  UIToolbar()
 
 extension EditListViewController {
     
-    // MARK: Constraint
-    
-    func addTableView() {
+    //    количество секций
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
-
-    view.addSubview(toolBar)
-    view.addSubview(tableView)
-
-
-        
-        tableView.backgroundColor = .white
-        tableView.register(EditTableViewCell.self, forCellReuseIdentifier: EditTableViewCell.idCell)
-        tableView.dataSource = datasource
-        tableView.delegate = self
-        tableView.indicatorStyle = .default
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.topAnchor.constraint(equalTo: toolBar.bottomAnchor, constant: 0).isActive = true
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        self.toolBar.barStyle = .default
-        self.toolBar.isTranslucent = true
-        self.toolBar.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
-        self.toolBar.tintColor = .systemBlue
-        self.toolBar.sizeToFit()
-            
-        toolBar.translatesAutoresizingMaskIntoConstraints = false
-        toolBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
-        toolBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
-        toolBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        toolBar.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 0).isActive = true
-        toolBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            
-        //        настройка кнопок
-        let savePersonImage = UIImage(systemName: "checkmark.rectangle")
-        let addOnePersonImage = UIImage(systemName: "person.crop.circle.badge.plus")
-//        let aboutProgrammImageForButton = UIImage(systemName: "checkmark.rectangle")
-        
-        let savePersonsListButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapSavePersonsListButton))
-        savePersonsListButton.image = savePersonImage
-        
-        let addOnePersonButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapAddOnePersonButton))
-        addOnePersonButton.image = addOnePersonImage
-        
-//        let aboutProgrammButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector (tapDellOnePersonButton))
-//        aboutProgrammButton.image = aboutProgrammImageForButton
-        
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
-        self.toolBar.setItems([addOnePersonButton, flexibleSpace, savePersonsListButton], animated: false)
-        self.toolBar.isUserInteractionEnabled = true
+        return personCoreData?.count ?? 0
     }
     
-//    добавить ячейку для Person
-    @objc func tapAddCellInSectionButton () {
-    //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
-        print("tapAddCellInSectionButton")
+    //    количество ячеек в секциях
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //        return onePerson[section].attributePerson.count
+        return personCoreData?[section].attributes?.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: EditTableViewCell.idCell, for: indexPath) as! EditTableViewCell
+        
+        guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
+            let attribut = attribute.attributePerson else {return cell}
+        
+        cell.textInCell.text = attribut
+        
+        return cell
+    }
+    
+    // MARK: - @objc func          =========         ===========            =========
+    
+    //    добавить ячейку для Person
+    @objc func tapAddCellInSectionButton (buttonTag: UIButton) {
+        let section = buttonTag.tag
+        
+        let alertController = UIAlertController(title: "Новый атрибут", message: "Введите текст:", preferredStyle: .alert)
+        let save = UIAlertAction(title: "сохранить", style: .default) { (action) in
+            let texF = alertController.textFields?.first
+            if let newPerson = texF?.text {
+                self.saveAttributesPersonTitleName(wiithAttributesPerson: newPerson, section: section)
+                self.tableView.reloadData()
+            }
         }
+        alertController.addTextField { _ in }
+        let cancelAction = UIAlertAction(title: "закрыть", style: .default) { _ in }
+        alertController.addAction(save)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func saveAttributesPersonTitleName (wiithAttributesPerson: String, section: Int) {
+        let context = getContext()
+        // получаем сущность в контексте
+        guard let entity = NSEntityDescription.entity(forEntityName: "Attributes", in: context) else {print("сущность Attributes не получена")
+            return}
+        // объект Attributes
+        let contextObject = Attributes(entity: entity, insertInto: context)
+        //        сохраняем конкретный атрибут
+        contextObject.attributePerson = wiithAttributesPerson
+        //        копия массива объекта Person
+        let attributes = personCoreData?[section].attributes?.mutableCopy() as? NSMutableOrderedSet
+        //         добавление одного атрибута
+        attributes?.add(contextObject)
+        //        присваиваем Person новый Attributes
+
+//        for i in self.personCoreData! {
+//            i.attributes = attributes
+//        }
+        
+        
+        self.personCoreData?[section].attributes = attributes
+        
+        do {
+            try context.save()
+            //            personCoreData?[indexPath.section].attributes!.append(attributes)
+            tableView.reloadData()
+        } catch let error as NSError {
+            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
+        }
+    }
+    
     
     // сохранение изменений
     @objc func tapSavePersonsListButton () {
-//        navigationController?.present(EditListViewController(), animated: true, completion: nil)
+        //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
         print("tapSavePersonsListButton")
     }
-
-//    добавить секцию с Person
-    @objc func tapAddOnePersonButton () {
-        print("tapAddOnePersonButton")
-//        navigationController?.present(LookListViewController(), animated: true, completion: nil)
+    
+    //    добавить секцию с Person
+    @objc func tapAddOnePersonButton() {
+        let alertController = UIAlertController(title: "Новый персонаж", message: "Введите имя:", preferredStyle: .alert)
+        let save = UIAlertAction(title: "сохранить", style: .default) { (action) in
+            let texF = alertController.textFields?.first
+            if let newPerson = texF?.text {
+                self.saveSectionPersonTitleName(wiithTitleName: newPerson)
+                self.tableView.reloadData()
+            }
+        }
+        alertController.addTextField { _ in }
+        let cancelAction = UIAlertAction(title: "закрыть", style: .default) { _ in }
+        alertController.addAction(save)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
-
+    
+    // MARK: - сохранение CoreData
+    
+    private func saveSectionPersonTitleName(wiithTitleName: String) {
+        let context = getContext()
+        // получаем сущность в контексте
+        guard let entity = NSEntityDescription.entity(forEntityName: "Person", in: context) else {print("сущность Person не получена")
+            return}
+        // объект Person
+        let personObject = Person(entity: entity, insertInto: context)
+        //            помещаем имя Person секции в объект
+        personObject.name = wiithTitleName
+        //            taskObject.lastname = lastName
+        
+        //            for attribute in attributesObject.attributes! {
+        //
+        //            }
+        // сохранение
+        do {
+            try context.save()
+            personCoreData!.append(personObject)
+        } catch let error as NSError {
+            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
+        }
+    }
+    
+    // получаем контекст CoreData
+    private func getContext() -> NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.coreDataManager.persistentContainer.viewContext
+    }
     
     @objc func tapDellOnePersonButton () {
+        let context = getContext()
+        let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
+        //        получаем все Person
+        if let objects = try? context.fetch(fetchRequest) {
+            for object in objects {
+                context.delete(object)
+            }
+        }
+        do {
+            try context.save()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
         print("tapDellOnePersonButton")
     }
     
+    // удаление в CoreData всех сохраненных объектов
+    private func deleteEntity() {
+        let context = getContext()
+        let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
+        if let objects = try? context.fetch(fetchRequest) {
+            for object in objects {
+                context.delete(object)
+                
+            }
+        }
+        do {
+            try context.save()
+            
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
+    }
+    //   ======================
+    // MARK: - Constraint
+    
+    func navigationBarAdd() {
+        //        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.8225412965, green: 0.7370750904, blue: 0.964071691, alpha: 1)
+        //        navigationItem.title = "знакомые"
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationItem.title = "список людей"
+        let addOnePersonButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.badge.plus"), style: .done, target: self, action: #selector(tapAddOnePersonButton))
+        self.navigationItem.leftItemsSupplementBackButton = true
+        self.navigationItem.leftBarButtonItems = [addOnePersonButton]
+        //        self.navigationItem.rightBarButtonItems = [buttonLeftMenu2]
+    }
 }
 
 
