@@ -51,6 +51,7 @@ class LoginViewController: UIViewController {
         lbl.backgroundColor = #colorLiteral(red: 0.8933718801, green: 0.9979824424, blue: 0.7020419836, alpha: 1)
         lbl.text = "123"
         lbl.placeholder = "логин"
+        lbl.textColor = .darkGray
         return lbl
     }()
     
@@ -64,6 +65,7 @@ class LoginViewController: UIViewController {
         lbl.backgroundColor = #colorLiteral(red: 0.8214086294, green: 1, blue: 0.6834984422, alpha: 1)
         lbl.text = "123"
         lbl.placeholder = "пароль"
+        lbl.textColor = .darkGray
         return lbl
     }()
     
@@ -74,7 +76,7 @@ class LoginViewController: UIViewController {
         button.setTitle("Вход", for: .normal)
         button.addTarget(self, action:  #selector(tapButton), for:.touchDown)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        button.setTitleColor(UIColor.black, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
