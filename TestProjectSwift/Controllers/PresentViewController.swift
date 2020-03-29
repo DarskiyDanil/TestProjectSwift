@@ -11,6 +11,7 @@ import UIKit
 class PresentViewController: UIViewController, UIToolbarDelegate {
     
     let toolBar =  UIToolbar()
+    var bool: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,12 +20,11 @@ class PresentViewController: UIViewController, UIToolbarDelegate {
         DispatchQueue.main.async {
             self.toolBarSetip()
         }
+        // жест нажатия
+        let hideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(toolBarAlfa))
+        // присваиваем жест нажатия
+        view.addGestureRecognizer(hideKeyboardGesture)
     }
-    
-//    deinit {
-//        PresentViewController()
-//    }
-    
 }
 
 
@@ -45,7 +45,7 @@ extension PresentViewController {
         toolBar.translatesAutoresizingMaskIntoConstraints = false
         toolBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
         toolBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
-        toolBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
+        toolBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
         
         //        настройка кнопок
         let editImageForButton = UIImage(systemName: "square.and.pencil")
@@ -67,11 +67,20 @@ extension PresentViewController {
     
     @objc func tapEditButton () {
         navigationController?.pushViewController(EditListViewController(), animated: true)
-//        present(EditListViewController(), animated: true, completion: nil)
     }
     
     @objc func tapLookButton () {
         navigationController?.pushViewController(LookListViewController(), animated: true)
+    }
+    
+    //    появление toolBar
+    @objc func toolBarAlfa() {
+        self.bool = !bool
+        if bool {
+            self.toolBar.alpha = 0
+        } else {
+            self.toolBar.alpha = 1
+        }
     }
     
     //    Аллерт

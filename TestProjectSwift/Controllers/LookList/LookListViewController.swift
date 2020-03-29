@@ -12,8 +12,6 @@ import CoreData
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
     static let shared = LookListViewController()
-    //    var context: NSManagedObjectContext!
-    //    let editListViewController = EditListViewController()
     let datasource = LookListDataSource()
     
     let tableView: UITableView = {
@@ -37,11 +35,8 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
         //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
         //        сортировка
-        //        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        //        fetchRequest.sortDescriptors = [sortDescriptor]
         do {
             datasource.personCoreData = try context.fetch(fetchRequest)
-            //            self.tableView.reloadData()
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -89,7 +84,6 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     func toggleSection(header: ExpandebleLookListHeaderFooterView, section: Int) {
         //        меняем
         datasource.personCoreData?[section].toggleExpanded = !(datasource.personCoreData?[section].toggleExpanded)!
-        
         //        меняем цвет секции
         if datasource.personCoreData?[section].toggleExpanded == true {
             header.view.backgroundColor = #colorLiteral(red: 0.7395023704, green: 0.8710801601, blue: 1, alpha: 1)
@@ -101,7 +95,9 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
         guard let person = datasource.personCoreData?[section] else {return}
         guard let attribut = person.attributes else {return}
         for row in 0..<attribut.count {
-            tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
+            DispatchQueue.main.async {
+                self.tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
+            }
         }
         tableView.endUpdates()
     }
@@ -125,15 +121,14 @@ extension LookListViewController {
     
     // MARK: - @objc func
     
-    //    нажатие кнопки для редактирования
+    //    нажатие кнопки для редактирования с переходом в EditList
     @objc func tapButtonCorrect() {
         let editListViewController = EditListViewController()
         editListViewController.modalPresentationStyle = .popover
         editListViewController.modalTransitionStyle = .crossDissolve
         editListViewController.isModalInPresentation = false
         present(editListViewController, animated: true, completion: nil)
-        //        self.dismiss(animated: true, completion: nil)
-        //        print("tapButtonCorrect")
+        //        navigationController?.pushViewController(EditListViewController(), animated: true)
     }
     
     //    MARK: - Constraint

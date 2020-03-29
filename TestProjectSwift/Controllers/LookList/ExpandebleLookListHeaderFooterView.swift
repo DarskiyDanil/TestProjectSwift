@@ -66,7 +66,6 @@ class ExpandebleLookListHeaderFooterView: UITableViewHeaderFooterView {
     //    инициализация ячеек по нажатию на секцию
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectHeaderAction)))
     }
     
@@ -82,16 +81,13 @@ extension ExpandebleLookListHeaderFooterView {
     // MARK: Constraint
     
     func addSectionView() {
-        
         contentView.addSubview(view)
-        
+        view.addSubview(buttonCorrect)
+        view.addSubview(name)
         view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0).isActive = true
         view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0).isActive = true
         view.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: 0).isActive = true
         view.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 0).isActive = true
-        
-        view.addSubview(buttonCorrect)
-        view.addSubview(name)
         
         name.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         name.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
@@ -102,14 +98,11 @@ extension ExpandebleLookListHeaderFooterView {
         buttonCorrect.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
         buttonCorrect.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
         buttonCorrect.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
-//        buttonCorrect.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 130).isActive = true
         buttonCorrect.widthAnchor.constraint(equalToConstant: 40).isActive = true
         buttonCorrect.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     // MARK: Action
-    
-    
     
     @objc func selectHeaderAction(gestureRecognizer: UITapGestureRecognizer) {
         let cell = gestureRecognizer.view as! ExpandebleLookListHeaderFooterView

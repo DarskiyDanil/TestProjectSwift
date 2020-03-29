@@ -24,6 +24,7 @@ class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
         button.setImage(UIImage(systemName: "person.crop.circle.badge.minus"), for: .normal)
         button.layer.cornerRadius = 15
         button.addTarget(self, action:  #selector(EditListViewController.shared.tapDellOnePersonButton), for:.touchDown)
+        button.backgroundColor = #colorLiteral(red: 1, green: 0.8995575309, blue: 0.9044402838, alpha: 1)
         return button
     }()
     
@@ -35,6 +36,7 @@ class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
         button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         button.layer.cornerRadius = 15
         button.addTarget(self, action:  #selector(EditListViewController.shared.tapAddCellInSectionButton), for:.touchDown)
+        button.backgroundColor = #colorLiteral(red: 0.849958241, green: 0.9956046939, blue: 0.8773219585, alpha: 1)
         return button
     }()
     
@@ -52,6 +54,7 @@ class ExpandebleEditListHeaderFooterView: UITableViewHeaderFooterView {
         text.layer.cornerRadius = 4
         text.backgroundColor = #colorLiteral(red: 0.9304324985, green: 0.919935286, blue: 1, alpha: 1)
         text.textAlignment = .natural
+        text.isEditable = false
         return text
     }()
     
@@ -110,16 +113,16 @@ extension ExpandebleEditListHeaderFooterView {
         name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 6).isActive = true
         name.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        dellOnePersonButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
-        dellOnePersonButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        dellOnePersonButton.rightAnchor.constraint(equalTo: buttonAdd.leftAnchor, constant: -4).isActive = true
-        dellOnePersonButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        dellOnePersonButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 4).isActive = true
+        dellOnePersonButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -4).isActive = true
+        dellOnePersonButton.rightAnchor.constraint(equalTo: buttonAdd.leftAnchor, constant: -8).isActive = true
+        dellOnePersonButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         dellOnePersonButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        buttonAdd.topAnchor.constraint(equalTo: view.topAnchor, constant: 2).isActive = true
-        buttonAdd.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2).isActive = true
-        buttonAdd.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -12).isActive = true
-        buttonAdd.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        buttonAdd.topAnchor.constraint(equalTo: view.topAnchor, constant: 4).isActive = true
+        buttonAdd.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -4).isActive = true
+        buttonAdd.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
+        buttonAdd.widthAnchor.constraint(equalToConstant: 30).isActive = true
         buttonAdd.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     

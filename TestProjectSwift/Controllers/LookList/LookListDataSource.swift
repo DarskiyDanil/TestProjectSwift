@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 
 class LookListDataSource: UITableView, UITableViewDataSource, UITableViewDelegate {
     
@@ -27,7 +26,7 @@ class LookListDataSource: UITableView, UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: LookListTableViewCell.idCell, for: indexPath) as! LookListTableViewCell
         guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
-        let attribut = attribute.attributePerson else {return cell}
+            let attribut = attribute.attributePerson else {return cell}
         cell.textLabel?.text = attribut
         return cell
     }

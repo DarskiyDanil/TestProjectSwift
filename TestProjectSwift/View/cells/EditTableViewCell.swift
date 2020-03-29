@@ -17,7 +17,8 @@ class EditTableViewCell: UITableViewCell {
     let textInCell: UITextView = {
         let text = UITextView()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.font = .systemFont(ofSize: 12)
+        text.font = .systemFont(ofSize: 13)
+        //        text.textAlignment = .center
         text.textColor = UIColor.black
         text.autocapitalizationType = .allCharacters
         text.autocorrectionType = .yes
@@ -25,6 +26,7 @@ class EditTableViewCell: UITableViewCell {
         text.layer.cornerRadius = 4
         text.backgroundColor = #colorLiteral(red: 0.9516987205, green: 0.9630662799, blue: 1, alpha: 1)
         text.textAlignment = .natural
+        text.isEditable = false
         return text
     }()
     

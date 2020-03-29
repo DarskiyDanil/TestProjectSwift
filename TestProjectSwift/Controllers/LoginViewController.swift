@@ -198,7 +198,7 @@ extension LoginViewController {
                 timerBool = false
                 self.progressBar.alpha = 0
                 if lableIog.text == "123" && lablePass.text == "123"{
-//                    анимация плавного появления
+                    //                    анимация плавного появления
                     let transition = CATransition()
                     transition.duration = 0.4
                     transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)

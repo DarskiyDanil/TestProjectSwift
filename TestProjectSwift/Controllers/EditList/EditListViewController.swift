@@ -16,8 +16,9 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationBarAdd()
+        DispatchQueue.main.async {
+            self.navigationBarAdd()
+        }
         tableView.indicatorStyle = .default
         tableView.backgroundColor = .white
         tableView.register(EditTableViewCell.self, forCellReuseIdentifier: EditTableViewCell.idCell)
@@ -31,12 +32,9 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         let context = getContext()
         //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
-        //        сортировка
-        //        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        //        fetchRequest.sortDescriptors = [sortDescriptor]
+        
         do {
             personCoreData = try context.fetch(fetchRequest)
-            //            self.tableView.reloadData()
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -89,6 +87,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         return personCoreData?[section].attributes?.count ?? 0
     }
     
+    //    ячейки
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: EditTableViewCell.idCell, for: indexPath) as! EditTableViewCell
         guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
@@ -100,7 +99,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
 }
 
 
-extension EditListViewController {
+extension EditListViewController: UITextViewDelegate {
     
     // MARK: - CoreData
     
@@ -119,7 +118,9 @@ extension EditListViewController {
                 print(error.localizedDescription)
             }
             //  перезагрузка таблицы
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
             completionHandler(true)
         }
         deleteAction.backgroundColor = .systemPink
@@ -138,11 +139,8 @@ extension EditListViewController {
     //    добавить секцию с Person
     private func saveSectionPersonTitleName(wiithTitleName: String) {
         let context = getContext()
-        // получаем сущность в контексте
-        //        guard let entity = NSEntityDescription.entity(forEntityName: "Person", in: context) else {print("сущность Person не получена"), return}
         // объект Person
         let personObject = Person(context: context)
-        //            = Person(entity: entity, insertInto: context)
         // помещаем имя Person секции в объект
         personObject.name = wiithTitleName
         // сохранение
@@ -157,9 +155,7 @@ extension EditListViewController {
     //    добавить атрибуты в секцию Person
     func saveAttributesPersonTitleName (wiithAttributesPerson: String, section: Int) {
         let context = getContext()
-        // получаем сущность в контексте
-        //        guard let entity = NSEntityDescription.entity(forEntityName: "Attributes", in: context) else {print("сущность Attributes не получена"); return}
-        // объект Attributes
+        // получаем объект Attributes в контексте
         let contextObject = Attributes(context: context)
         //        сохраняем конкретный атрибут
         contextObject.attributePerson = wiithAttributesPerson
@@ -171,7 +167,9 @@ extension EditListViewController {
         self.personCoreData?[section].attributes = attributes
         do {
             try context.save()
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         } catch let error as NSError {
             print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
         }
@@ -186,11 +184,10 @@ extension EditListViewController {
             let texF = alertController.textFields?.first
             if let newPerson = texF!.text {
                 self.saveSectionPersonTitleName(wiithTitleName: newPerson)
-                self.tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
-            //            else {
-            //                self.allertNilString ()
-            //            }
         }
         alertController.addTextField { _ in }
         let cancelAction = UIAlertAction(title: "закрыть", style: .default) { _ in }
@@ -207,7 +204,9 @@ extension EditListViewController {
             let texF = alertController.textFields?.first
             if let newPerson = texF?.text {
                 self.saveAttributesPersonTitleName(wiithAttributesPerson: newPerson, section: section)
-                self.tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         }
         alertController.addTextField { _ in }
@@ -230,16 +229,12 @@ extension EditListViewController {
         do {
             try context.save()
             personCoreData?.remove(at: section)
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         } catch let error as NSError {
             print(error.localizedDescription)
         }
-    }
-    
-    // сохранение изменений
-    @objc func tapSavePersonsListButton () {
-        //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
-        print("tapSavePersonsListButton")
     }
     
     // MARK: - Constraint
@@ -253,10 +248,3 @@ extension EditListViewController {
         self.navigationItem.leftBarButtonItems = [addOnePersonButton]
     }
 }
-
-
-// MARK: - -----------------------------------------------------------------------------------------------
-
-// сделать сохранение в textView  или не делать
-
-// MARK: - -----------------------------------------------------------------------------------------------
