@@ -12,12 +12,11 @@ import CoreData
 class EditListViewController: UITableViewController, ExpandebleEditListHeaderFooterViewDelegate {
     
     var personCoreData: [Person]?
-    //    let indexPath = IndexPath()
-    
     static let shared = EditListViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationBarAdd()
         tableView.indicatorStyle = .default
         tableView.backgroundColor = .white
@@ -30,20 +29,21 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         super.viewWillAppear(animated)
         //        получаем сохраненные сущности
         let context = getContext()
-        //         запрос
+        //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
         //        сортировка
         //        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         //        fetchRequest.sortDescriptors = [sortDescriptor]
         do {
             personCoreData = try context.fetch(fetchRequest)
+            //            self.tableView.reloadData()
         } catch let error as NSError {
             print(error.localizedDescription)
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //    убрал палец с ячейки и снял выделение
+        //        убрал палец с ячейки и снял выделение
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -51,12 +51,13 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 45
     }
+    
     //    высота ячейки
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 45
     }
     
-    // установка вида для нижнего колонтитула
+    //    установка вида для нижнего колонтитула
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 4))
         footerView.backgroundColor = .white
@@ -78,37 +79,45 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         return header
     }
     
-    //    при нажатии на секцию
-    func toggleSection(header: ExpandebleEditListHeaderFooterView, section: Int) {
-        //        обновление строк относящихся к секции
-        tableView.beginUpdates()
-        guard let person = personCoreData else {return}
-        guard let attributes = person[section].attributes else {return}
-        for row in 0..<attributes.count {
-            tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
-        }
-        tableView.endUpdates()
+    //    количество секций
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return personCoreData?.count ?? 0
     }
+    
+    //    количество ячеек в секциях
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return personCoreData?[section].attributes?.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: EditTableViewCell.idCell, for: indexPath) as! EditTableViewCell
+        guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
+            let attribut = attribute.attributePerson else {return cell}
+        cell.textInCell.text = attribut
+        return cell
+    }
+    
+}
+
+
+extension EditListViewController {
+    
+    // MARK: - CoreData
     
     //    удаление ячеек свайпом
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { _, _, completionHandler in
-            //  удаление в массиве
-            //            self.onePerson[indexPath.section].attributePerson.remove(at: indexPath.row)
+            //            удаление в массиве
             let context = self.getContext()
             guard let person = self.personCoreData else {return}
             guard let attributes = person[indexPath.section].attributes  else {return}
             guard let attribut = attributes[indexPath.row] as? Attributes else {return}
             context.delete(attribut)
-            
             do {
                 try context.save()
-                //                tableView.deleteRows(at: [IndexPath], with: .automatic)
             } catch let error as NSError {
                 print(error.localizedDescription)
             }
-            
-            
             //  перезагрузка таблицы
             self.tableView.reloadData()
             completionHandler(true)
@@ -120,40 +129,79 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         return configuration
     }
     
-}
-
-
-extension EditListViewController {
-    
-    //    количество секций
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        
-        return personCoreData?.count ?? 0
+    // получаем контекст CoreData
+    private func getContext() -> NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.coreDataManager.persistentContainer.viewContext
     }
     
-    //    количество ячеек в секциях
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        return onePerson[section].attributePerson.count
-        return personCoreData?[section].attributes?.count ?? 0
+    //    добавить секцию с Person
+    private func saveSectionPersonTitleName(wiithTitleName: String) {
+        let context = getContext()
+        // получаем сущность в контексте
+        //        guard let entity = NSEntityDescription.entity(forEntityName: "Person", in: context) else {print("сущность Person не получена"), return}
+        // объект Person
+        let personObject = Person(context: context)
+        //            = Person(entity: entity, insertInto: context)
+        // помещаем имя Person секции в объект
+        personObject.name = wiithTitleName
+        // сохранение
+        do {
+            try context.save()
+            personCoreData!.append(personObject)
+        } catch let error as NSError {
+            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
+        }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: EditTableViewCell.idCell, for: indexPath) as! EditTableViewCell
-        
-        guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
-            let attribut = attribute.attributePerson else {return cell}
-        
-        cell.textInCell.text = attribut
-        
-        return cell
+    //    добавить атрибуты в секцию Person
+    func saveAttributesPersonTitleName (wiithAttributesPerson: String, section: Int) {
+        let context = getContext()
+        // получаем сущность в контексте
+        //        guard let entity = NSEntityDescription.entity(forEntityName: "Attributes", in: context) else {print("сущность Attributes не получена"); return}
+        // объект Attributes
+        let contextObject = Attributes(context: context)
+        //        сохраняем конкретный атрибут
+        contextObject.attributePerson = wiithAttributesPerson
+        //        копия массива объекта Person
+        let attributes = personCoreData?[section].attributes?.mutableCopy() as? NSMutableOrderedSet
+        //         добавление одного атрибута
+        attributes?.add(contextObject)
+        //        присваиваем Person новый Attributes
+        self.personCoreData?[section].attributes = attributes
+        do {
+            try context.save()
+            self.tableView.reloadData()
+        } catch let error as NSError {
+            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
+        }
     }
     
-    // MARK: - @objc func          =========         ===========            =========
+    // MARK: - @objc func
+    
+    //    добавить секцию с Person
+    @objc func tapAddOnePersonButton() {
+        let alertController = UIAlertController(title: "Новый персонаж", message: "Введите имя:", preferredStyle: .alert)
+        let save = UIAlertAction(title: "сохранить", style: .default) { (action) in
+            let texF = alertController.textFields?.first
+            if let newPerson = texF!.text {
+                self.saveSectionPersonTitleName(wiithTitleName: newPerson)
+                self.tableView.reloadData()
+            }
+            //            else {
+            //                self.allertNilString ()
+            //            }
+        }
+        alertController.addTextField { _ in }
+        let cancelAction = UIAlertAction(title: "закрыть", style: .default) { _ in }
+        alertController.addAction(save)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
     
     //    добавить ячейку для Person
     @objc func tapAddCellInSectionButton (buttonTag: UIButton) {
         let section = buttonTag.tag
-        
         let alertController = UIAlertController(title: "Новый атрибут", message: "Введите текст:", preferredStyle: .alert)
         let save = UIAlertAction(title: "сохранить", style: .default) { (action) in
             let texF = alertController.textFields?.first
@@ -169,82 +217,7 @@ extension EditListViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func saveAttributesPersonTitleName (wiithAttributesPerson: String, section: Int) {
-        let context = getContext()
-        // получаем сущность в контексте
-        guard let entity = NSEntityDescription.entity(forEntityName: "Attributes", in: context) else {print("сущность Attributes не получена")
-            return}
-        // объект Attributes
-        let contextObject = Attributes(entity: entity, insertInto: context)
-        //        сохраняем конкретный атрибут
-        contextObject.attributePerson = wiithAttributesPerson
-        //        копия массива объекта Person
-        let attributes = personCoreData?[section].attributes?.mutableCopy() as? NSMutableOrderedSet
-        //         добавление одного атрибута
-        attributes?.add(contextObject)
-        //        присваиваем Person новый Attributes
-        self.personCoreData?[section].attributes = attributes
-        
-        do {
-            try context.save()
-            //            personCoreData?[indexPath.section].attributes!.append(attributes)
-            tableView.reloadData()
-        } catch let error as NSError {
-            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
-        }
-    }
-    
-    
-    // сохранение изменений
-    @objc func tapSavePersonsListButton () {
-        //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
-        print("tapSavePersonsListButton")
-    }
-    
-    //    добавить секцию с Person
-    @objc func tapAddOnePersonButton() {
-        let alertController = UIAlertController(title: "Новый персонаж", message: "Введите имя:", preferredStyle: .alert)
-        let save = UIAlertAction(title: "сохранить", style: .default) { (action) in
-            let texF = alertController.textFields?.first
-            if let newPerson = texF?.text {
-                self.saveSectionPersonTitleName(wiithTitleName: newPerson)
-                self.tableView.reloadData()
-            }
-        }
-        alertController.addTextField { _ in }
-        let cancelAction = UIAlertAction(title: "закрыть", style: .default) { _ in }
-        alertController.addAction(save)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true, completion: nil)
-    }
-    
-    // MARK: - сохранение CoreData
-    
-    private func saveSectionPersonTitleName(wiithTitleName: String) {
-        let context = getContext()
-        // получаем сущность в контексте
-        guard let entity = NSEntityDescription.entity(forEntityName: "Person", in: context) else {print("сущность Person не получена")
-            return}
-        // объект Person
-        let personObject = Person(entity: entity, insertInto: context)
-        // помещаем имя Person секции в объект
-        personObject.name = wiithTitleName
-        // сохранение
-        do {
-            try context.save()
-            personCoreData!.append(personObject)
-        } catch let error as NSError {
-            print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
-        }
-    }
-    
-    // получаем контекст CoreData
-    private func getContext() -> NSManagedObjectContext {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.coreDataManager.persistentContainer.viewContext
-    }
-    
-    // удаление в CoreData объектов
+    // удаление объектов Person кнопкой
     @objc func tapDellOnePersonButton (buttonTag: UIButton) {
         let section = buttonTag.tag
         let context = getContext()
@@ -252,30 +225,32 @@ extension EditListViewController {
         //        получаем все Person
         if let objects = try? context.fetch(fetchRequest) {
             let object = objects[section]
-            //            for object in objects {
             context.delete(object)
-            //            }
         }
         do {
             try context.save()
             personCoreData?.remove(at: section)
+            self.tableView.reloadData()
         } catch let error as NSError {
             print(error.localizedDescription)
         }
-        self.tableView.reloadData()
+    }
+    
+    // сохранение изменений
+    @objc func tapSavePersonsListButton () {
+        //        navigationController?.present(EditListViewController(), animated: true, completion: nil)
+        print("tapSavePersonsListButton")
     }
     
     // MARK: - Constraint
     
+    //    настройка navigationBar
     func navigationBarAdd() {
-        //        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.8225412965, green: 0.7370750904, blue: 0.964071691, alpha: 1)
-        //        navigationItem.title = "знакомые"
         self.navigationController?.navigationBar.prefersLargeTitles = false
         self.navigationItem.title = "список людей"
         let addOnePersonButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.badge.plus"), style: .done, target: self, action: #selector(tapAddOnePersonButton))
         self.navigationItem.leftItemsSupplementBackButton = true
         self.navigationItem.leftBarButtonItems = [addOnePersonButton]
-        //        self.navigationItem.rightBarButtonItems = [buttonLeftMenu2]
     }
 }
 

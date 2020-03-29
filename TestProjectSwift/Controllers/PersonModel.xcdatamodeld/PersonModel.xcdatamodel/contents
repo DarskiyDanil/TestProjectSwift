@@ -5,12 +5,12 @@
         <relationship name="peron" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="attributes" inverseEntity="Person"/>
     </entity>
     <entity name="Person" representedClassName=".Person" syncable="YES">
-        <attribute name="lastname" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="toggleExpanded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Attributes" inverseName="peron" inverseEntity="Attributes"/>
     </entity>
     <elements>
         <element name="Attributes" positionX="-41.90625" positionY="208.05859375" width="128" height="73"/>
-        <element name="Person" positionX="-224.890625" positionY="177.53125" width="128" height="28"/>
+        <element name="Person" positionX="-224.890625" positionY="177.53125" width="128" height="88"/>
     </elements>
 </model>

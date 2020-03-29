@@ -2,7 +2,7 @@
 //  Person+CoreDataProperties.swift
 //  TestProjectSwift
 //
-//  Created by  Данил Дарский on 26.03.2020.
+//  Created by  Данил Дарский on 29.03.2020.
 //  Copyright © 2020  Данил Дарский. All rights reserved.
 //
 //
@@ -17,7 +17,7 @@ extension Person {
         return NSFetchRequest<Person>(entityName: "Person")
     }
 
-    @NSManaged public var lastname: String?
+    @NSManaged public var toggleExpanded: Bool
     @NSManaged public var name: String?
     @NSManaged public var attributes: NSOrderedSet?
 

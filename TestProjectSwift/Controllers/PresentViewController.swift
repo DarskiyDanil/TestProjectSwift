@@ -71,7 +71,7 @@ extension PresentViewController {
     }
     
     @objc func tapLookButton () {
-        navigationController?.present(LookListViewController(), animated: true, completion: nil)
+        navigationController?.pushViewController(LookListViewController(), animated: true)
     }
     
     //    Аллерт

@@ -12,9 +12,10 @@ import CoreData
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
     static let shared = LookListViewController()
-    var context: NSManagedObjectContext!
-//    let editListViewController = EditListViewController()
+    //    var context: NSManagedObjectContext!
+    //    let editListViewController = EditListViewController()
     let datasource = LookListDataSource()
+    
     let tableView: UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +32,19 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //        получаем сохраненные сущности
+        let context = getContext()
+        //        запрос
+        let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
+        //        сортировка
+        //        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        //        fetchRequest.sortDescriptors = [sortDescriptor]
+        do {
+            datasource.personCoreData = try context.fetch(fetchRequest)
+            //            self.tableView.reloadData()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
     //    убрал палец с ячейки
@@ -44,7 +58,8 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     }
     //    высота ячейки в зависимости от нажатой секции
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if datasource.sectionsPerson[indexPath.section].toggleExpanded {
+        guard let person = datasource.personCoreData?[indexPath.section] else {return 0}
+        if person.toggleExpanded {
             return 45
         }
         return 0
@@ -65,34 +80,34 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     //    внешний вид секции
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = ExpandebleLookListHeaderFooterView()
-        header.setupSection(withTitle: datasource.sectionsPerson[section].namePerson + "  " + datasource.sectionsPerson[section].lastnamePerson, section: section, delegate: self)
+        guard let name = datasource.personCoreData![section].name else {return header}
+        header.setupSection(withTitle: name, section: section, delegate: self)
         return header
     }
     
     //    при нажатии на секцию
     func toggleSection(header: ExpandebleLookListHeaderFooterView, section: Int) {
         //        меняем
-        datasource.sectionsPerson[section].toggleExpanded = !datasource.sectionsPerson[section].toggleExpanded
+        datasource.personCoreData?[section].toggleExpanded = !(datasource.personCoreData?[section].toggleExpanded)!
         
         //        меняем цвет секции
-        if datasource.sectionsPerson[section].toggleExpanded == true {
+        if datasource.personCoreData?[section].toggleExpanded == true {
             header.view.backgroundColor = #colorLiteral(red: 0.7395023704, green: 0.8710801601, blue: 1, alpha: 1)
         } else {
             header.view.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
         }
-        
         //        обновление строк относящихся к секции
         tableView.beginUpdates()
-        for row in 0..<datasource.sectionsPerson[section].attributePerson.count {
+        guard let person = datasource.personCoreData?[section] else {return}
+        guard let attribut = person.attributes else {return}
+        for row in 0..<attribut.count {
             tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
         }
         tableView.endUpdates()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-        
-        
+        super.viewDidDisappear(animated)
     }
     
 }
@@ -100,10 +115,31 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
 
 extension LookListViewController {
     
-    // MARK: Constraint
+    // MARK: - CoreData
     
+    // получаем контекст CoreData
+    private func getContext() -> NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.coreDataManager.persistentContainer.viewContext
+    }
+    
+    // MARK: - @objc func
+    
+    //    нажатие кнопки для редактирования
+    @objc func tapButtonCorrect() {
+        let editListViewController = EditListViewController()
+        editListViewController.modalPresentationStyle = .popover
+        editListViewController.modalTransitionStyle = .crossDissolve
+        editListViewController.isModalInPresentation = false
+        present(editListViewController, animated: true, completion: nil)
+        //        self.dismiss(animated: true, completion: nil)
+        //        print("tapButtonCorrect")
+    }
+    
+    //    MARK: - Constraint
+    
+    //    размещение tableView
     func addTableView() {
-        
         view.addSubview(tableView)
         tableView.backgroundColor = .white
         tableView.register(LookListTableViewCell.self, forCellReuseIdentifier: LookListTableViewCell.idCell)
@@ -116,21 +152,6 @@ extension LookListViewController {
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-    }
-    
-//    застрял здесь
-    @objc func tapButtonCorrect() {
-        let editListViewController = EditListViewController()
-        
-        editListViewController.modalPresentationStyle = .popover
-        editListViewController.modalTransitionStyle = .crossDissolve
-        editListViewController.isModalInPresentation = false
-        
-        present(editListViewController, animated: true, completion: nil)
-//        self.dismiss(animated: true, completion: nil)
-        
-        print("tapButtonCorrect")
-        
     }
     
 }

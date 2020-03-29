@@ -11,35 +11,24 @@ import CoreData
 
 class LookListDataSource: UITableView, UITableViewDataSource, UITableViewDelegate {
     
-    var sectionsPerson: [SectionPerson] = [
-        SectionPerson(namePerson: "Василий", lastnamePerson: "Васильевич", attributePerson: [
-            "вредные привычки - нет", "возраст: 55", "женат"
-        ], toggleExpanded: false),
-        SectionPerson(namePerson: "Пётр", lastnamePerson: "Петрович", attributePerson: [
-            "здесь может быть", "Ваша", "Реклама"
-        ], toggleExpanded: false),
-        SectionPerson(namePerson: "Олег", lastnamePerson: "Олегович", attributePerson: [
-            "сотрудник Lays", "в отпуске"
-        ], toggleExpanded: false),
-        SectionPerson(namePerson: "Денис", lastnamePerson: "Денисович", attributePerson: [
-            "позвонить", "по вопросам аренды"
-        ], toggleExpanded: false)
-    ]
+    var personCoreData: [Person]?
     
     //    количество секций
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionsPerson.count
+        return personCoreData?.count ?? 0
     }
     
     //    количество ячеек в секциях
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sectionsPerson[section].attributePerson.count
+        return personCoreData?[section].attributes?.count ?? 0
     }
     
     //     настройка ячейки
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: LookListTableViewCell.idCell, for: indexPath) as! LookListTableViewCell
-        cell.textLabel?.text = sectionsPerson[indexPath.section].attributePerson[indexPath.row]
+        guard let attribute = personCoreData?[indexPath.section].attributes?[indexPath.row] as? Attributes,
+        let attribut = attribute.attributePerson else {return cell}
+        cell.textLabel?.text = attribut
         return cell
     }
     
