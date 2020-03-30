@@ -27,7 +27,6 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
         DispatchQueue.main.async {
             self.addTableView()
         }
@@ -98,12 +97,6 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     func toggleSection(header: ExpandebleLookListHeaderFooterView, section: Int) {
         //        меняем
         datasource.personCoreData?[section].toggleExpanded = !(datasource.personCoreData?[section].toggleExpanded)!
-        //        меняем цвет секции
-        if datasource.personCoreData?[section].toggleExpanded == true {
-            header.view.backgroundColor = #colorLiteral(red: 0.7395023704, green: 0.8710801601, blue: 1, alpha: 1)
-        } else {
-            header.view.backgroundColor = #colorLiteral(red: 0.910679996, green: 0.8889362812, blue: 1, alpha: 1)
-        }
         //        обновление строк относящихся к секции
         tableView.beginUpdates()
         guard let person = datasource.personCoreData?[section] else {return}
