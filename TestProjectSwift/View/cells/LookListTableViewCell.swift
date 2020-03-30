@@ -15,6 +15,8 @@ class LookListTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        backgroundColor = #colorLiteral(red: 0.9516987205, green: 0.9630662799, blue: 1, alpha: 1)
+        self.textLabel?.textColor = .darkText
     }
     
     required init?(coder: NSCoder) {
