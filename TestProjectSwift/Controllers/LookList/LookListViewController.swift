@@ -9,6 +9,11 @@
 import UIKit
 import CoreData
 
+// создал имя нотификации
+extension Notification.Name {
+    static let reload = Notification.Name("reload")
+}
+
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
     static let shared = LookListViewController()
@@ -26,6 +31,8 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
         DispatchQueue.main.async {
             self.addTableView()
         }
+        //        прием уведомления
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableData), name: .reload, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +46,13 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
             datasource.personCoreData = try context.fetch(fetchRequest)
         } catch let error as NSError {
             print(error.localizedDescription)
+        }
+    }
+    
+    //    метод уведомления для обновления tableView
+    @objc func reloadTableData(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
     
@@ -128,7 +142,7 @@ extension LookListViewController {
         editListViewController.modalTransitionStyle = .crossDissolve
         editListViewController.isModalInPresentation = false
         present(editListViewController, animated: true, completion: nil)
-        //        navigationController?.pushViewController(EditListViewController(), animated: true)
+        //                navigationController?.pushViewController(EditListViewController(), animated: true)
     }
     
     //    MARK: - Constraint

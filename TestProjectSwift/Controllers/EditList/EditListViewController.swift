@@ -40,6 +40,11 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         }
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.post(name: .reload, object: nil)
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //        убрал палец с ячейки и снял выделение
         tableView.deselectRow(at: indexPath, animated: true)
