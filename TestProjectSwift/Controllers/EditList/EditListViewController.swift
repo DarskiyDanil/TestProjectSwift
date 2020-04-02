@@ -32,7 +32,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
     }
     
     func getCoreData() {
-                //        получаем сохраненные сущности
+        //        получаем сохраненные сущности
         let context = getContext()
         //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
@@ -196,9 +196,6 @@ extension EditListViewController: UITextViewDelegate {
             let texF = alertController.textFields?.first
             if let newPerson = texF!.text {
                 self.saveSectionPersonTitleName(wiithTitleName: newPerson)
-//                DispatchQueue.main.async {
-//                    self.tableView.reloadData()
-//                }
             }
         }
         alertController.addTextField { _ in }
@@ -216,9 +213,6 @@ extension EditListViewController: UITextViewDelegate {
             let texF = alertController.textFields?.first
             if let newPerson = texF?.text {
                 self.saveAttributesPersonTitleName(wiithAttributesPerson: newPerson, section: section)
-//                DispatchQueue.main.async {
-//                    self.tableView.reloadData()
-//                }
             }
         }
         alertController.addTextField { _ in }

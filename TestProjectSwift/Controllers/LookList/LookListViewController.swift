@@ -106,7 +106,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     //    при нажатии на секцию
     func toggleSection(header: ExpandebleLookListHeaderFooterView, section: Int) {
         //        меняем
-         dataSource.personCoreData?[section].toggleExpanded = !(dataSource.personCoreData?[section].toggleExpanded)!
+        dataSource.personCoreData?[section].toggleExpanded = !(dataSource.personCoreData?[section].toggleExpanded)!
         //        обновление строк относящихся к секции
         tableView.beginUpdates()
         guard let attribut = dataSource.personCoreData?[section].attributes else {return}
@@ -114,9 +114,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
             DispatchQueue.main.async {
                 self.tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .none)
             }
-//            self.tableView.reloadSectionIndexTitles()
         }
-//        self.tableView.reloadSectionIndexTitles()
         tableView.endUpdates()
     }
     
