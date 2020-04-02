@@ -24,11 +24,15 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
         tableView.register(EditTableViewCell.self, forCellReuseIdentifier: EditTableViewCell.idCell)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         tableView.rowHeight = UITableView.automaticDimension
+        getCoreData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //        получаем сохраненные сущности
+    }
+    
+    func getCoreData() {
+                //        получаем сохраненные сущности
         let context = getContext()
         //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
@@ -42,6 +46,7 @@ class EditListViewController: UITableViewController, ExpandebleEditListHeaderFoo
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.tableView.superview?.endEditing(true)
         NotificationCenter.default.post(name: .reload, object: nil)
     }
     
@@ -119,12 +124,11 @@ extension EditListViewController: UITextViewDelegate {
             context.delete(attribut)
             do {
                 try context.save()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             } catch let error as NSError {
                 print(error.localizedDescription)
-            }
-            //  перезагрузка таблицы
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
             }
             completionHandler(true)
         }
@@ -152,6 +156,9 @@ extension EditListViewController: UITextViewDelegate {
         do {
             try context.save()
             personCoreData!.append(personObject)
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         } catch let error as NSError {
             print("метод saveSectionPersonTitleName не сохранил: \(error.localizedDescription)")
         }
@@ -189,9 +196,9 @@ extension EditListViewController: UITextViewDelegate {
             let texF = alertController.textFields?.first
             if let newPerson = texF!.text {
                 self.saveSectionPersonTitleName(wiithTitleName: newPerson)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                }
             }
         }
         alertController.addTextField { _ in }
@@ -209,9 +216,9 @@ extension EditListViewController: UITextViewDelegate {
             let texF = alertController.textFields?.first
             if let newPerson = texF?.text {
                 self.saveAttributesPersonTitleName(wiithAttributesPerson: newPerson, section: section)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                }
             }
         }
         alertController.addTextField { _ in }

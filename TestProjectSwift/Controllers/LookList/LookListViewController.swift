@@ -17,7 +17,7 @@ extension Notification.Name {
 class LookListViewController: UIViewController, UITableViewDelegate, UICollectionViewDelegateFlowLayout, ExpandebleLookListHeaderFooterViewDelegate {
     
     static let shared = LookListViewController()
-    let datasource = LookListDataSource()
+    let dataSource = LookListDataSource()
     
     let tableView: UITableView = {
         var tableView = UITableView()
@@ -27,22 +27,31 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(tableView)
         DispatchQueue.main.async {
             self.addTableView()
         }
+        returnCoreData()
         //        прием уведомления
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTableData), name: .reload, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    func returnCoreData() {
         //        получаем сохраненные сущности
         let context = getContext()
         //        запрос
         let fetchRequest: NSFetchRequest<Person> = Person.fetchRequest()
-        //        сортировка
+        
         do {
-            datasource.personCoreData = try context.fetch(fetchRequest)
+            dataSource.personCoreData = try context.fetch(fetchRequest)
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -51,6 +60,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     //    метод уведомления для обновления tableView
     @objc func reloadTableData(_ notification: Notification) {
         DispatchQueue.main.async {
+            self.returnCoreData()
             self.tableView.reloadData()
         }
     }
@@ -66,7 +76,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     }
     //    высота ячейки в зависимости от нажатой секции
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let person = datasource.personCoreData?[indexPath.section] else {return 0}
+        guard let person = dataSource.personCoreData?[indexPath.section] else {return 0}
         if person.toggleExpanded {
             return 45
         }
@@ -88,7 +98,7 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     //    внешний вид секции
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = ExpandebleLookListHeaderFooterView()
-        guard let name = datasource.personCoreData![section].name else {return header}
+        guard let name = dataSource.personCoreData![section].name else {return header}
         header.setupSection(withTitle: name, section: section, delegate: self)
         return header
     }
@@ -96,16 +106,17 @@ class LookListViewController: UIViewController, UITableViewDelegate, UICollectio
     //    при нажатии на секцию
     func toggleSection(header: ExpandebleLookListHeaderFooterView, section: Int) {
         //        меняем
-        datasource.personCoreData?[section].toggleExpanded = !(datasource.personCoreData?[section].toggleExpanded)!
+         dataSource.personCoreData?[section].toggleExpanded = !(dataSource.personCoreData?[section].toggleExpanded)!
         //        обновление строк относящихся к секции
         tableView.beginUpdates()
-        guard let person = datasource.personCoreData?[section] else {return}
-        guard let attribut = person.attributes else {return}
+        guard let attribut = dataSource.personCoreData?[section].attributes else {return}
         for row in 0..<attribut.count {
             DispatchQueue.main.async {
-                self.tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .automatic)
+                self.tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .none)
             }
+//            self.tableView.reloadSectionIndexTitles()
         }
+//        self.tableView.reloadSectionIndexTitles()
         tableView.endUpdates()
     }
     
@@ -135,17 +146,16 @@ extension LookListViewController {
         editListViewController.modalTransitionStyle = .crossDissolve
         editListViewController.isModalInPresentation = false
         present(editListViewController, animated: true, completion: nil)
-        //                navigationController?.pushViewController(EditListViewController(), animated: true)
     }
     
     //    MARK: - Constraint
     
     //    размещение tableView
     func addTableView() {
-        view.addSubview(tableView)
+        
         tableView.backgroundColor = .white
         tableView.register(LookListTableViewCell.self, forCellReuseIdentifier: LookListTableViewCell.idCell)
-        tableView.dataSource = datasource
+        tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.indicatorStyle = .default
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
