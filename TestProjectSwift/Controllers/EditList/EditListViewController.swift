@@ -12,7 +12,7 @@ import CoreData
 class EditListViewController: UITableViewController, ExpandebleEditListHeaderFooterViewDelegate {
     
     var personCoreData: [Person]?
-    static let shared = EditListViewController()
+     static let shared = EditListViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()

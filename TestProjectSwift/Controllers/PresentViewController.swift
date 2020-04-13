@@ -10,8 +10,8 @@ import UIKit
 
 class PresentViewController: UIViewController, UIToolbarDelegate {
     
-    let toolBar =  UIToolbar()
-    var bool: Bool = false
+    lazy var toolBar =  UIToolbar()
+    lazy var bool: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
