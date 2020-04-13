@@ -10,10 +10,10 @@ import UIKit
 
 class LoginViewController: UIViewController {
     
-    lazy var presentViewController = PresentViewController()
+    var presentViewController = PresentViewController()
     //    фон-градиент
-    lazy var gradientView: GradientView = GradientView(colors: [.orange, .yellow ,.green])
-    lazy var timerBool: Bool = false
+    var gradientView: GradientView = GradientView(colors: [.orange, .yellow ,.green])
+    var timerBool: Bool = false
     
     let progressBar: UIProgressView = {
         let progress = UIProgressView()
@@ -26,7 +26,7 @@ class LoginViewController: UIViewController {
     }()
     
     //    для добавления кнопок
-    let contentView: UIView = {
+    var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
@@ -34,7 +34,7 @@ class LoginViewController: UIViewController {
     }()
     
     //    для отступа от клавиатуры
-    let scrollView: UIScrollView = {
+    var scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
         v.backgroundColor = .clear

@@ -30,7 +30,7 @@ class ExpandebleLookListHeaderFooterView: UITableViewHeaderFooterView {
     }()
     
     //    ФИО человека
-    let name: UILabel = {
+    var name: UILabel = {
         var lbl = UILabel()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         lbl.numberOfLines = 0
